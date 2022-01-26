@@ -6,7 +6,7 @@ const UserSchema = require("../models/User");
 var session = null;
 let allpdf = "";
 let allusers = "";
-var fullname ="";
+var fullname = "";
 let Bdfiles = [];
 var version = [];
 var Bdusers = [];
@@ -15,8 +15,8 @@ var nodemailer = require("nodemailer");
 var transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "ricardoramandimbisoa@gmail.com",
-    pass: "ryane_jarello",
+    user: "developpeur.solumada@gmail.com",
+    pass: "S0!um2d2",
   },
 });
 
@@ -39,7 +39,7 @@ routeExp.route("/").get(async function (req, res) {
     //   console.log("All user  is removed");
     // })
     //     })
-    res.render("plateforme/login.html", { error: "",msgs:"null"});
+    res.render("plateforme/login.html", { error: "", msgs: "null" });
   }
 });
 function randomCode() {
@@ -72,16 +72,16 @@ routeExp.route("/home").get(function (req, res) {
           Bdfiles.push(allpdf[i].name);
           version.push(allpdf[i].version);
         }
-        fullname = await UserSchema.findOne({email : session.userid});
+        fullname = await UserSchema.findOne({ email: session.userid });
         res.render("home.html", {
           dones: allpdf,
           bdfls: Bdfiles,
           version: version,
-          email:fullname.first_name + " " +fullname.last_name
+          email: fullname.first_name + " " + fullname.last_name,
         });
       });
   } else {
-    res.render("plateforme/login.html", { error: "" ,msgs:"null"});
+    res.render("plateforme/login.html", { error: "", msgs: "null" });
   }
 });
 //Login post
@@ -108,7 +108,7 @@ routeExp.route("/login").post(function (req, res) {
       } else {
         res.render("plateforme/login.html", {
           error: "Email does not exist or password is wrong",
-          msgs:"null"
+          msgs: "null",
         });
       }
     });
@@ -122,55 +122,57 @@ routeExp.route("/create").post(function (req, res) {
   session = req.session;
   var random = randomCode();
   mongoose
-      .connect(
-        "mongodb+srv://solumada:Password@cluster0.t0vx8.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
-        {
-          useUnifiedTopology: true,
-          UseNewUrlParser: true,
-        }
-      )
-      .then(async () => {
-        allusers = await UserSchema.find();
-        Bdusers = [];
-        for (i = 0; i < allusers.length; i++) {
-          Bdusers.push(allusers[i].email);
-        }
-        if (Bdusers.indexOf(req.body.email) === -1) {
-          session.code = random;
-          session.firstname = req.body.firstname;
-          session.lastname = req.body.lastname;
-          session.email = req.body.email;
-          session.password = req.body.password;
-          var mailOptions = {
-            from: "ricardoramandimbisoa@gmail.com",
-            to: req.body.email,
-            subject: "Verification code XML Gazette",
-            html: "<center><h1>YOUR XML GAZETTE CODE AUTHENTIFICATION</h1>"+"<h3 style='width:250px;font-size:50px;padding:8px;background-color:#46449B; color:white'>"+random+"<h3></center>"
-          };
-          transporter.sendMail(mailOptions, function (error, info) {
-            if (error) {
-              console.log(error);
-            } else {
-              console.log("Email sent: " + info.response);
-              res.redirect("/activation");
-            }
-          });
-        }
-        else{
-          res.render("plateforme/create.html", {
-            msge: req.body.email + " is already exist",
-            msgs: "null",
-          });
-        }
-      })
-
+    .connect(
+      "mongodb+srv://solumada:Password@cluster0.t0vx8.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+      {
+        useUnifiedTopology: true,
+        UseNewUrlParser: true,
+      }
+    )
+    .then(async () => {
+      allusers = await UserSchema.find();
+      Bdusers = [];
+      for (i = 0; i < allusers.length; i++) {
+        Bdusers.push(allusers[i].email);
+      }
+      if (Bdusers.indexOf(req.body.email) === -1) {
+        session.code = random;
+        session.firstname = req.body.firstname;
+        session.lastname = req.body.lastname;
+        session.email = req.body.email;
+        session.password = req.body.password;
+        var mailOptions = {
+          from: "developpeur.solumada@gmail.com",
+          to: req.body.email,
+          subject: "Verification code XML Gazette",
+          html:
+            "<center><h1>YOUR XML GAZETTE CODE AUTHENTIFICATION</h1>" +
+            "<h3 style='width:250px;font-size:50px;padding:8px;background-color:#46449B; color:white'>" +
+            random +
+            "<h3></center>",
+        };
+        transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log("Email sent: " + info.response);
+            res.redirect("/activation");
+          }
+        });
+      } else {
+        res.render("plateforme/create.html", {
+          msge: req.body.email + " is already exist",
+          msgs: "null",
+        });
+      }
+    });
 });
 routeExp.route("/activation").get(function (req, res) {
-  res.render("plateforme/activate.html",{err:"null"});
+  res.render("plateforme/activate.html", { err: "null" });
 });
 routeExp.route("/authentification").post(function (req, res) {
   session = req.session;
-  if (session.code){
+  if (session.code) {
     if (req.body.code == session.code) {
       mongoose
         .connect(
@@ -187,74 +189,72 @@ routeExp.route("/authentification").post(function (req, res) {
             email: session.email,
             password: session.password,
           };
-            await new UserSchema(new_user).save();
-            res.render("plateforme/login.html", {
-              msgs: session.email+  " is successfully registered",
-              error:""
-            });
-            req.session.destroy();
-            session = req.session;
+          await new UserSchema(new_user).save();
+          res.render("plateforme/login.html", {
+            msgs: session.email + " is successfully registered",
+            error: "",
+          });
+          req.session.destroy();
+          session = req.session;
         });
+    } else {
+      res.render("plateforme/activate.html", { err: "Invalid code" });
     }
-    else {
-      res.render("plateforme/activate.html",{err:"Invalid code"});
+  } else {
+    if (req.body.code == session.confirm) {
+      res.redirect("/newpassword");
+    } else {
+      res.render("plateforme/activate.html", { err: "Invalid code" });
     }
   }
-  else{
-      if (req.body.code == session.confirm){
-          res.redirect('/newpassword');
-      }
-      else{
-        res.render("plateforme/activate.html",{err:"Invalid code"});
-      }
-  }
-  
 });
 //Forgot password
 routeExp.route("/forgot").get(function (req, res) {
-  res.render("plateforme/forgot.html",{err:"null"});
+  res.render("plateforme/forgot.html", { err: "null" });
 });
 routeExp.route("/forgot").post(function (req, res) {
   session = req.session;
   mongoose
-  .connect(
-    "mongodb+srv://solumada:Password@cluster0.t0vx8.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
-    {
-      useUnifiedTopology: true,
-      UseNewUrlParser: true,
-    }
-  )
-  .then(async () => {
-    allusers = await UserSchema.find();
-    Bdusers = [];
-    for (i = 0; i < allusers.length; i++) {
-      Bdusers.push(allusers[i].email);
-    }
-    if (Bdusers.indexOf(req.body.email) === -1) {
-      res.render("plateforme/forgot.html",{err:"Email does not exist"});
-    }
-    else{
-      var random = randomCode();
-      session.emailconfirm = req.body.email;
-      session.confirm = random;
-      var mailOptions = {
-        from: "ricardoramandimbisoa@gmail.com",
-        to: req.body.email,
-        subject: "Verification code XML Gazette",
-        html: "<center><h1>YOUR XML GAZETTE CODE AUTHENTIFICATION</h1>"+"<h3 style='width:250px;font-size:50px;padding:8px;background-color:#46449B; color:white'>"+random+"<h3></center>"
-      };
-      transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-          console.log(error);
-        } else {
-          console.log("Email sent: " + info.response);
-          res.redirect("/activation");
-        }
-      });
-        res.redirect('/activation');
-    }
-    
-  })
+    .connect(
+      "mongodb+srv://solumada:Password@cluster0.t0vx8.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+      {
+        useUnifiedTopology: true,
+        UseNewUrlParser: true,
+      }
+    )
+    .then(async () => {
+      allusers = await UserSchema.find();
+      Bdusers = [];
+      for (i = 0; i < allusers.length; i++) {
+        Bdusers.push(allusers[i].email);
+      }
+      if (Bdusers.indexOf(req.body.email) === -1) {
+        res.render("plateforme/forgot.html", { err: "Email does not exist" });
+      } else {
+        var random = randomCode();
+        session.emailconfirm = req.body.email;
+        session.confirm = random;
+        var mailOptions = {
+          from: "developpeur.solumada@gmail.com",
+          to: req.body.email,
+          subject: "Verification code XML Gazette",
+          html:
+            "<center><h1>YOUR XML GAZETTE CODE AUTHENTIFICATION</h1>" +
+            "<h3 style='width:250px;font-size:50px;padding:8px;background-color:#46449B; color:white'>" +
+            random +
+            "<h3></center>",
+        };
+        transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log("Email sent: " + info.response);
+            res.redirect("/activation");
+          }
+        });
+        res.redirect("/activation");
+      }
+    });
 });
 //Define new password
 routeExp.route("/newpassword").get(function (req, res) {
@@ -262,22 +262,25 @@ routeExp.route("/newpassword").get(function (req, res) {
 });
 routeExp.route("/define").post(function (req, res) {
   mongoose
-  .connect(
-    "mongodb+srv://solumada:Password@cluster0.t0vx8.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
-    {
-      useUnifiedTopology: true,
-      UseNewUrlParser: true,
-    }
-  )
-  .then(async () => {
-      await UserSchema.findOneAndUpdate({email : session.emailconfirm},{ password: req.body.password});
+    .connect(
+      "mongodb+srv://solumada:Password@cluster0.t0vx8.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+      {
+        useUnifiedTopology: true,
+        UseNewUrlParser: true,
+      }
+    )
+    .then(async () => {
+      await UserSchema.findOneAndUpdate(
+        { email: session.emailconfirm },
+        { password: req.body.password }
+      );
       res.render("plateforme/login.html", {
-        msgs: session.emailconfirm+  " is successfully updated",
-        error:""
+        msgs: session.emailconfirm + " is successfully updated",
+        error: "",
       });
       req.session.destroy();
       session = req.session;
-  })
+    });
 });
 
 //Logout
