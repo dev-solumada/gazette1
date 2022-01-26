@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="/style.css">
+		<link rel="stylesheet" href="/bstyle.css">
+        <title>XML - GAZETTE</title>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="login-container bg-light">
+                <form action="/login" method="post">
+                    <div class="text-center">
+						<span class="form-legend text-primary">Gazette</span>
+                        <h2 class="text-primary">LOGIN</h2>
+                    </div>
+                    <div>
+                        <label for="email">Email address: </label>
+                        
+                        <input type="email" id="email" name="email" class="login-input" placeholder="Your email address">
+                    </div>
+                    <br>
+                    <div>
+                        <label for="pwd">Password: </label>
+                        <input type="password" id="password" name="password" class="login-input" placeholder="Your password">
+                    </div>
+                    <br>
+                    <center><small id ="error"></small></center>
+                    <hr>
+                    <div class="row text-center mb-2">
+                        <div class="col-12">
+                            <button type="submit" id="loginbtn" class="btn  login-btn"><B class="text-white">LOGIN</B></button>
+                        </div>
+                    </div>
+                    <div class="row text-center">
+                        <div class="col-12">
+                            <button type="button" id="signinbtn" onclick="heading('/create')" class="btn login-btn2"><B class="text-white">CREATE NEW ACCOUNT</B></button>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="text-center">
+                        <a href="#" onclick="heading('/forgot')" class="link"><small>Forgot password?</small></a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script type="text/javascript">
+            function heading(url) {
+                window.location.href = url;
+            }
+
+            document.forms[0].onsubmit = function(e) {
+                // inputs
+                for (const input of document.querySelectorAll('input')) {
+                    input.classList.remove('is-invalid');
+                    if (input.nextSibling) {
+                        input.nextSibling.remove();
+                    }
+                    // password 
+                    if (input.type === 'password') {
+                        if (input.value.length < 4)
+                            addWarning(input, 'The password must be at least 4 characters.');
+                    } 
+                    // email
+                    if (input.type === 'email') {
+                        if (input.value.trim().length === 0)
+                            addWarning(input, 'This field is required.');
+                        else {
+                            if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(input.value)))
+                                addWarning(input, 'You have entered an invalid email address!');
+                        }
+                    }
+                }
+                // verifier les erreur
+                let validate = true;
+                for (const input of document.querySelectorAll('input')) {
+                    if (input.classList.contains('is-invalid')) {
+                        validate = false;
+                        break;
+                    }
+                }
+                if (!validate) e.preventDefault();
+            }
+            
+            function addWarning(input, message) {
+                let small = document.createElement('small');
+                small.innerText = message;
+                small.className = 'text-danger';
+                input.after(small);
+                input.classList.add('is-invalid');
+            }
+            let errorfield = document.getElementById("error");
+            try{
+                var error = "<%= error %>";
+                if (error == ""){
+                }
+                else{
+                    errorfield.setAttribute("style","color:red;");
+                    errorfield.innerHTML = error ;
+                }
+            }
+            catch {
+
+            }
+            var succesfull = "<%= msgs %>";
+            if (succesfull != "null"){
+                errorfield.setAttribute("style","color:green;");
+                errorfield.innerHTML = succesfull ;
+
+            }
+             
+        </script>
+    </body>
+</html>

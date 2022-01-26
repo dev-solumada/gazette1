@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/bstyle.css">
+    <title>XML - GAZETTE</title>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="login-container bg-light">
+            <form action="" method="post">
+                <div class="text-center">
+                    <span class="form-legend text-primary">Gazette</span>
+                    <h2 class="text-primary">CREATE ACCOUNT</h2>
+                </div>
+                <div>
+                    <label for="firstname">Firstname: </label>
+                    <input type="text" id="firstname" name="firstname" class="login-input" placeholder="Your firstname">
+                </div>
+                <br>
+                <div>
+                    <label for="lastname">Lastname: </label>
+                    <input type="text" id="lastname" name="lastname" class="login-input" placeholder="Your lastname">
+                </div>
+                <br>
+                <div>
+                    <label for="email">Email: </label>
+                    <input type="email" id="email" name="email" class="login-input" placeholder="Your email">
+                </div>
+                <br>
+                <div>
+                    <label for="password">Password: </label>
+                    <input type="password" id="password" name="password" class="login-input"
+                        placeholder="Your password">
+                </div>
+                <br>
+                <div>
+                    <label for="confirmation">Confirmation: </label>
+                    <input type="password" id="confirmation" name="confirmation" class="login-input"
+                        placeholder="Repeat your password">
+                </div>
+                <br>
+                <center><small id="msg"></small></center>
+                <hr>
+                <div class="text-center">
+                    <button type="submit" id="submitbtn" class="btn login-btn"><B class="text-white">SUBMIT</B></button>
+                </div>
+                <br>
+                <div class="text-center">
+                    <small>Have an account already? <a href="#" class="link" onclick="heading('/')">go to
+                            login.</a></small>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script type="text/javascript">
+        function heading(url) {
+            window.location.href = url;
+        }
+
+        document.forms[0].onsubmit = function (e) {
+            console.log("onsumb");
+            // inputs
+            for (const input of document.querySelectorAll('input')) {
+                input.classList.remove('is-invalid');
+                if (input.nextSibling) {
+                    input.nextSibling.remove();
+                }
+                if (input.type === 'text') {
+                    if (input.value.trim().length === 0) {
+                        addWarning(input, 'This field is required.');
+                    }
+                } else if (input.type === 'password') {
+                    if (input.id === 'password' && input.value.length < 4)
+                        addWarning(input, 'The password must be at least 4 characters.');
+                    if (input.id === 'confirmation') {
+                        if (input.value.length === 0)
+                            addWarning(input, 'This field is required.');
+                        else if (input.value !== document.getElementById('password').value)
+                            addWarning(input, 'Your confirmation is invalid.');
+                    }
+                } else if (input.type === 'email') {
+                    if (input.value.trim().length === 0)
+                        addWarning(input, 'This field is required.');
+                    else {
+                        if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(input.value)))
+                            addWarning(input, 'You have entered an invalid email address!');
+                    }
+                }
+            }
+            // verifier les erreur
+            let validate = true;
+            for (const input of document.querySelectorAll('input')) {
+                if (input.classList.contains('is-invalid')) {
+                    validate = false;
+                    break;
+                }
+            }
+            if (!validate) e.preventDefault();
+        }
+
+        function addWarning(input, message) {
+            let small = document.createElement('small');
+            small.innerText = message;
+            small.className = 'text-danger';
+            input.after(small);
+            input.classList.add('is-invalid');
+        }
+        let msgfield = document.getElementById("msg");
+        if ("<%= msge %>" != "null") {
+            msgfield.setAttribute("style", "color:red;");
+            msgfield.innerHTML = "<%= msge %>";
+        }
+        else if ("<%= msgs %>" != "null") {
+            msgfield.setAttribute("style", "color:green;");
+            msgfield.innerHTML = "<%= msgs %>";
+        }
+        else {
+            msgfield.remove();
+        }
+    </script>
+</body>
+
+</html>

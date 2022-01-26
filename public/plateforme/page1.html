@@ -1,0 +1,64 @@
+<div class="row">
+    <div class="col-md-12 p-1">
+        <fieldset class="bg-light">
+            <legend><label for="">Choose country's and chapter's gazette</label></legend>
+            <table width="100%">
+                <tr>
+                    <td>
+                        <hr>
+                        <table width="100%">
+                            <tr>
+                                <td>
+                                    <!-- Country -->
+                                    <fieldset class="bg-white">
+                                        <legend> <label for="" class="label">Country</label></legend>
+                                        <select class="input-p1" name="pays" id="GAZC">
+                                            <option value="DZ" class="Algérie">DZ</option>
+                                            <option value="TN" class="Tunisie">TN</option>
+                                            <option value="MG" class="Madagascar">MG</option>
+                                            <option value="MM" class="Myanmar">MM</option>
+                                            <option value="TRNC" class="Chypre du Nord">TRNC</option>
+                                            <option value="MS" class="Montserrat">MS</option>
+                                            <option value="GM" class="Gambie">GM</option>
+                                            <option value="LS" class="Lesotho">LS</option>
+                                            <option value="SZ" class="Eswatini">SZ</option>
+                                        </select>
+                                    </fieldset>
+                                </td>
+                                <td>
+                                    <!-- Gazette Number (alphanum)-->
+                                    <fieldset class="bg-white">
+                                        <legend> <label for="GAZN" class="label">Number of Gazette</label></legend>
+                                        <input class="select input-p1" type="text" name="GAZN" id="GAZN" placeholder="">
+                                    </fieldset>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <!-- Gazette Date (date)-->
+                                    <fieldset class="bg-white">
+                                        <legend><label for="GAZD" class="label">Date of Gazette</label></legend>
+                                            <input class="select input-p1" type="date" name="GAZD" id="GAZD">
+                                    </fieldset>
+                                </td>
+                                <td>
+                                    <!-- Date of Publication (date)-->
+                                    <fieldset class="bg-white">
+                                        <legend><label for="GAZP" class="label">Date of Publication</label></legend>
+                                            <input class="select input-p1" type="date" name="GAZP" id="GAZP">
+                                    </fieldset>
+                                </td>
+                            </tr>
+                        </table>
+                
+                        <br>
+                
+                        <div class="btn-block">
+                            <button type="button" class="btn btn-primary px-3 py-1" id="b-page1" onclick="getPage1Values()"><B class="text-white">Next</B></button>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+    </div>
+</div>

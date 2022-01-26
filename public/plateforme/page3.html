@@ -1,0 +1,322 @@
+<form action="" method="post">
+	<div class="row">
+		<div class="com-md-12 p-1">
+			<!-- Chapitre -->
+			<fieldset>
+				<legend><label for="chapter">Chapter</label></legend>
+				<select id="chapter">
+					<!-- afficher le chapitre séléctionné ici -->
+				</select>
+			</fieldset>
+		</div>
+	</div>
+	<div id="ident-page-0">
+		<div class="row">
+			<div class="col-md-7 col-lg-7 col-xl-7 p-1" id="ident-col-1">
+				<!-- Field set Identifier -->
+				<fieldset class="identifier-fieldset">
+					<legend><label for="">Identifier</label></legend>
+					<table class="table-identifier" border="1"  width="100%">
+						<!--  Serial number of the registration (alphanum) -->
+						<tr>
+							<td><label for="111"><strong>111</strong> Registration Nr. </label></td>
+							<td><input class="select" type="text" name="111" id="111"></td>
+						</tr>	
+						
+						<!--  Date of the termination of the registration of the mark *Date of the registration/renewal (date)-->
+						<tr>		
+							<td><label for="141"><strong>141</strong> CancellationDate </label></td>
+							<td><input class="select" type="date" name="141" id="141"></td>
+						</tr> 	
+						
+						<!--  Date of the registration (date) -->
+						<tr>
+							<td><label for="151"><strong>151</strong> Registration Date </label></td>
+							<td><input class="select" type="date" name="151" id="151"></td>
+						</tr>
+						<!-- Date of the renewal Related registration numbers (date) -->
+						<tr>
+							<td><label for="156"><strong>156</strong> Renewal Date </label></td>
+							<td><input class="select" type="date" name="156" id="156"></td>
+						</tr>
+						
+						<!-- Expected duration of the registration (number in years) -->
+						<tr>
+							<td><label for="171"><strong>171</strong> Registration Duration </label></td>
+							<td><input class="select" type="number" name="171" id="171"></td>
+						</tr>
+						
+						<!-- Expected duration of the renewal (number in years) -->
+						<tr>
+							<td><label for="176"><strong>176</strong> Renewal Duration </label></td>
+							<td><input class="select" type="number" name="176" id="176"></td>
+						</tr>
+						
+						<!-- Expected expiration date of the registration/renewal (date) -->
+						<tr>
+							<td><label for="180"><strong>180</strong> Expiration Date </label></td>
+							<td><input class="select" type="date" name="180" id="180"></td>
+						</tr>
+						
+						<!-- Expected expiration date of the renewal Authority registering the mark * (date) -->
+						<tr>
+							<td><label for="186"><strong>186</strong> Expiration Date </label></td>
+							<td><input class="select" type="date" name="186" id="186"></td>
+						</tr>
+						
+						<!--  Data concerning the application * (text) -->
+						<tr>
+							<td><label for="200"><strong>200</strong> Application info </label></td>
+							<td><input class="select" type="text" name="200" id="200"></td>
+						</tr>
+						
+						<!--  Serial number of the application (alphanum) -->
+						<tr>
+							<td><label for="210"><strong>210</strong> Application Nr. </label></td>
+							<td><input class="select" type="text" name="210" id="210"></td>
+						</tr>
+						
+						<!-- Date of filing of the application (date) -->
+						<tr>
+							<td><label for="220"><strong>220</strong> Application Date </label></td>
+							<td><input class="select" type="date" name="220" id="220"></td>
+						</tr>
+						
+						<!--  Indications regarding use requirements (text) -->
+						<tr>
+							<td><label for="527"><strong>527</strong> Use Requirements </label></td>
+							<td><input class="select" type="text" name="527" id="527"></td>
+						</tr>
+						
+					</table>
+				</fieldset>
+			</div>
+			<div class="col-md-5 col-lg-5 col-xl-5 p-1">
+				<div id="ident-col-2">
+					<!-- Reproduction of the mark where the mark is represented in standard characters * (image) -->
+					<fieldset>
+						<legend><label for="541"><strong>541</strong> Trademark Name </label></legend>
+						<div class="row">
+							<div class="col-md-12">
+								<td><input class="select" type="text" name="541" id="541"></td>
+							</div>
+						</div>
+					</fieldset>
+					<!-- Image and color claim -->
+					<fieldset>
+						<legend><label for="">Image, Color claim</label></legend>
+						<div class="row">
+							<div class="col-md-12">
+								<!-- Reproduction of the mark * (image) -->
+								<fieldset>
+									<legend><label for="540"><strong>540</strong> Figurative element </label></legend>
+									<img src="../assets/images/placeholder.png" alt="image" id="image" class="image" width="150px" height="150px"> <br>
+									<input type="file" id="inputFile" class="inputFile hide" id="540" accept="image/*" onchange="uploadImageFile()">
+									<input type="hidden" name="540" class="imagePath" value="">
+								</fieldset>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-12">
+								<!-- Information concerning colors claimed (text) -->
+								<fieldset>
+									<legend><label for="591"><strong>591</strong> Color Claim </label></legend>
+									<input class="select" type="text" name="591" id="591">
+								</fieldset>
+							</div>
+						</div>
+					</fieldset>
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-md-12 p-1"  id="applicant-field">
+				<fieldset>
+					<!-- Name and address of the applicant * (name and address) -->
+					<legend><label for="731"><strong>731</strong> Applicant <img src="../assets/images/Add-icon.png" class="btn" id="app_add" onclick="addelementapp(this)" width="20" height="20" style="position: relative;top: 3px;"></label></legend>
+					<table border="1">
+						<thead class="color-cf" style="text-align: left;">
+							<th><label for="731">Name</label></th>
+							<th><label for="731">Address</label></th>
+							<th><label for="731">Country</label></th>
+							<th></th>
+						</thead>
+						<tbody id="applicant-row">
+							<tr>
+								<td>
+									<input class="select" type="text" name="731-name" class="applicant-input" id="name731-0" width="100%">
+								</td>
+								<td>
+									<input class="select" type="text" name="731-address" class="applicant-input" id="address731-0" width="100%">
+								</td>
+								<td>
+									<input class="select" type="text" name="731-country" class="applicant-input" id="country731-0" width="100%">
+								</td>
+								<td class="col-btn">
+									<img src="../assets/images/Delete-icon.png" class="btn" alt="..." width="24" height="24">
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</fieldset>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-12 p-1" id="owner-field">
+				<fieldset>
+					<!-- Owner * (name and address) -->
+					<legend><label for="732"><strong>732</strong> Owner <img src="../assets/images/Add-icon.png" class="btn"
+								id="app_add" onclick="addelementowner(this)" width="20" height="20"
+								style="position: relative;top: 3px;"></label></legend>
+					<table border="1">
+						<thead class="color-cf" style="text-align: left;">
+							<th><label for="732">Name</label></th>
+							<th><label for="732">Address</label></th>
+							<th><label for="732">Country</label></th>
+							<th></th>
+						</thead>
+						<tbody id="owner-row">
+							<tr>
+								<td>
+									<input class="select" type="text" name="732-name" class="owner-input" id="name732-0">
+								</td>
+								<td>
+									<input class="select" type="text" name="732-address" class="owner-input" id="address732-0">
+								</td>
+								<td>
+									<input class="select" type="text" name="732-country" class="owner-input" id="country732-0">
+								</td>
+								<td class="col-btn">
+									<img src="../assets/images/Delete-icon.png" class="btn" alt="..." width="24" height="24">
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</fieldset>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-md-12 p-1" id="agent-field">
+				<fieldset>
+					<!-- Name and address of the applicant * (name and address) -->
+					<legend><label for="731">Agent <img src="../assets/images/Add-icon.png" alt="..." class="btn" onclick="addelementagt(this)" id="appagt_add" width="20" height="20" style="position: relative;top: 3px;"></label></legend>
+					<table border="1">
+						<thead class="color-cf" style="text-align: left;">
+							<th><label for="740"><strong>740</strong> Name </label></th>
+							<th><label for="750"><strong>750</strong> Address </label></th>
+							<th><label for="770"><strong>770</strong> Country</label></th>
+							<th></th>
+						</thead>
+						<tbody id="applicant-agt">
+							<tr>
+								<!-- Name of the representative (name)-->
+								<td><input class="select" type="text" name="740" id="740"></td>
+								<!-- Address for correspondence (address)-->
+								<td><input class="select" type="text" name="750" id="750"></td>
+								<!--  -->
+								<td><input class="select" type="text" name="770" id="770"></td>
+								<td align="center">
+									<img src="../assets/images/Delete-icon.png" class="btn" alt="..." width="24" height="24">
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</fieldset>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-md-12 p-1" id="nice-field">
+				<fieldset>
+					<!-- Nice classs Good&Services -->
+					<legend><label for="">Nice classes &nbsp;&nbsp;&nbsp; Good&Services <img src="../assets/images/Add-icon.png" alt="..." class="btn" onclick="addelementnice(this)" id="appnice_add" width="20" height="20" style="position: relative;top: 3px;"></label></legend>
+					<table border="1">
+						<thead class="color-cf" style="text-align: left;">
+							<th><label for="511"><strong>511</strong> Nice class </label></th>
+							<th><label for="510"><strong>510</strong> List of G&S </label></th>
+							<th></th>
+						</thead>
+						<tbody id="apllicant-nice">
+							<tr>
+								<!-- The International Classification of Goods and Services /Nice Classification) and/or list of goods and/or services classified according thereto (number between 0 and 45) -->
+								<td><input class="select" type="number" name="511" id="511" min="0" max="45" value="0" onkeyup="fieldemptynice('511','510','appnice_add')" onchange="check511Value(this)"></td>
+								<!-- List of goods and/or services, if not classified * (text long) -->
+								<td><textarea class="select" name="510" id="510" cols="30"  onkeyup="fieldemptynice('511','510','appnice_add')" rows="1"></textarea></td>
+								<td class="col-btn" align="center">
+									<img src="../assets/images/Delete-icon.png" class="btn" alt="..." width="24" height="24">
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</fieldset>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12 p-1">
+				<!-- Boutton next and previous -->
+				<div class="text-end p-1 mt-2" id="ident-0-button">
+					<small class="float-start text-muted">Number of page: <span id="ident-page-nbr-0">1</span></small>
+					<button type="button" onclick="nextIdentifier('1')" class="btn btn-warning"><B class="text-white">Next &xrArr;</B></button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12 p-1">
+			<fieldset>
+				<!--  -->
+				<legend><label for="">Priorities </label></legend>
+				<table border="1">
+					<thead class="color-cf" style="text-align: left;">
+						<th><label for="GAZC">Country </label></th>
+						<th><label for="GAZD">Date </label></th>
+						<th><label for="GAZN">Number </label></th>
+						<th><label for="GAZP">Date of publication </label></th>
+					</thead>
+					<tbody>
+						<tr>
+							<!-- Gazette Country (alphanum) -->
+							<td>
+								<select class="select" name="GAZC" id="GAZC">
+									<option value=""></option>
+								</select>
+							</td>
+							<!-- Gazette Date (date)-->
+							<td><input class="select" type="date" name="GAZD" id="GAZD"></td>
+							<!-- Gazette Number (alphanum)-->
+							<td><input class="select" type="text" name="GAZN" id="GAZN"></td>
+							<!-- Gazette Date of Publication (date) -->
+							<td><input class="select" type="date" name="GAZP" id="GAZP"></td>
+						</tr>
+					</tbody>
+				</table>
+			</fieldset>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12 p-1">
+			<fieldset>
+				<legend><label for="571"><strong>571</strong> Description </label></legend>
+				<!-- Description of mark (text) -->
+				<textarea class="select" name="571" id="571" rows="2"></textarea>
+			</fieldset>
+		</div>
+	</div>
+	<!-- button -->
+	<div class="row p-1">
+		<div class="col-md-12 p-2 bg-light">
+			<div class="float-start">
+				<button type="button" class="btn btn-primary px-3 py-1" onclick="previousToPage2()"><B class="text-white">Previous</B></button>
+			</div>
+			<div class="float-end">
+				<button type="button" class="btn btn-success py-1 px-3 hidden" onclick="downloadXML()" id="submitButton"><B class="text-white">Download</B></button>
+			</div>
+		</div>
+	</div>
+	<br>
+</form>
