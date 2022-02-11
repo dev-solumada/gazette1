@@ -16,7 +16,7 @@
             <form action="" method="post">
                 <div class="text-center">
                     <span class="form-legend text-primary">Gazette</span>
-                    <h2 class="text-primary">CREATE ACCOUNT</h2>
+                    <h2 class="text-primary">ADD ACCOUNT</h2>
                 </div>
                 <div>
                     <label for="firstname">Firstname: </label>
@@ -34,6 +34,14 @@
                 </div>
                 <br>
                 <div>
+                    <label for="acounttype">Account type: </label>
+                    <select name="" id="" class="login-input">
+                        <option value="0">Client</option>
+                        <option value="1">Administrateur</option>
+                    </select>
+                </div>
+                <br>
+                <div>
                     <label for="password">Password: </label>
                     <input type="password" id="password" name="password" class="login-input"
                         placeholder="Your password">
@@ -48,12 +56,11 @@
                 <center><small id="msg"></small></center>
                 <hr>
                 <div class="text-center">
-                    <button type="submit" id="submitbtn" class="btn login-btn"><B class="text-white">SUBMIT</B></button>
+                    <button type="submit" id="submitbtn" class="btn btn-primary"><B class="text-white">SUBMIT</B></button>
                 </div>
                 <br>
                 <div class="text-center">
-                    <small>Have an account already? <a href="#" class="link" onclick="heading('/')">go to
-                            login.</a></small>
+                    <small>Go back to the <a href="#" class="link" onclick="heading('/list')">list</a></small>
                 </div>
             </form>
         </div>
@@ -70,7 +77,7 @@
                 if (input.nextSibling) {
                     input.nextSibling.remove();
                 }
-                if (input.type === 'text') {
+                if (input.type === 'text' && input.name !== 'lastname') {
                     if (input.value.trim().length === 0) {
                         addWarning(input, 'This field is required.');
                     }

@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="../assets/css/style.css">
+		<link rel="stylesheet" href="../assets/css/bstyle.css">
+        <title>XML - GAZETTE</title>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="row top-bar" id="navbar_top">
+                <div class="col-lg-6">
+                    <span class="form-legend text-primary float-start">Formulaire Gazette</span>
+                </div>
+                <div class="col-lg-6">
+                    <div class="row">
+                        <div class="text">
+                            <div class="row">
+                                <div class="col-12">
+                                    <span class="profile border float-end my-0 ms-2">
+                                        <span>
+                                            <img src="/user.png" alt="userpic" srcset="" style="opacity: 0.6;width: 24px;">
+                                        </span>
+                                        <span class="mb-1">
+                                            <label><b class="text-dark"><%= email.substring(0, 100) %></b></label>
+                                        </span>
+                                    </span>
+                                    <% if (!type) { %> 
+                                        <select id="pdfdone" class="finisheddoc border py-2 float-end mx-2">
+                                            <option value="" class="text-primary">Finished documents (<%= dones.length %> )</option>
+                                            <% dones.forEach(function(done) { %>
+                                                <option value='<%= done.name %>'><%= done.name %> </option>
+                                            <% }); %>
+                                        </select>
+                                    <% } %>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 text-end">
+                                    <% if (type === true) { %>
+                                    <button type="button" class="btn btn-light" onclick="heading('/history/all')"><B class="text-dark ">Finished documents</B></button>
+                                    <button type="button" class="btn btn-light" onclick="heading('/list')"><B class="text-dark ">Go to users</B></button>
+                                    <button type="button" class="btn btn-light" onclick="heading('/home')"><B class="text-dark ">Go to home page</B></button>
+                                    <% } %>
+                                    <button type="button" class="btn btn-danger" onclick="logout()"><B class="text-white ">Logout</B></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="row">
+                <div class="col-md-5">
+                    <fieldset>
+                        <legend><label>Add new user</label></legend>
+                        <form action="/create" method="post" >
+                            <div class="bg-light border p-4">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="firstname">Firstname: </label>
+                                        <input type="text" id="firstname" name="firstname" class="create-input" placeholder="User firstname">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="lastname">Lastname: </label>
+                                        <input type="text" id="lastname" name="lastname" class="create-input" placeholder="User lastname">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="email">Email: </label>
+                                        <input type="email" id="email" name="email" class="create-input" placeholder="User email">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="">Account type: </label>
+                                        <select name="accounttype" id="" class="create-input">
+                                            <option value="0">Client</option>
+                                            <option value="1">Administrator</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="password">Password: </label>
+                                        <input type="password" id="password" name="password" class="create-input"
+                                            placeholder="User password">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="confirmation">Confirmation: </label>
+                                        <input type="password" id="confirmation" name="confirmation" class="create-input"
+                                            placeholder="Repeat User password">
+                                    </div>
+                                </div>
+                                <center><small id="msg"></small></center>
+                                <hr>
+                                <div class="text-right">
+                                    <button type="submit" id="submitbtn" class="btn btn-primary py-1"><B class="text-white">SAVE</B></button>
+                                </div>
+                            </div>
+                        </form>
+                    </fieldset>
+                </div>
+                <div class="col-md-7">
+                    <fieldset>
+                        <legend><label for="">List of users</label></legend>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="notification" style="display: none;">
+                                </div>
+                            </div>
+                        </div>
+                        <table class="table-user" id="user-table" border="1">
+                            <thead>
+                                <tr class="bg-light">
+                                    <th></th>
+                                    <th class="bg-white"><input type="search" name="search" id="search" placeholder="SEARCH . . ."></th>
+                                    <th colspan="3" class="text-end">
+                                        <button type="button" class="btn py-1 disabled mx-0" id="delete-btn" onclick="deleteAll(this)"><B class="text-white">Delete seleted item</B></button>
+                                    </th>
+                                </tr>
+                                <tr class="bg-light">
+                                    <th width="40px" class="text-center"><input type="checkbox" id="selectAll-cb" value="0"></th>
+                                    <th class="user-tr">Fullname</th>
+                                    <th class="user-tr">Email</th>
+                                    <th class="user-tr">Type</th>
+                                    <th width="50px"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% length = 0; %> 
+                                <% users.forEach(user => { %>
+                                    <% if (user.email !== main_user && user.email !== email) { %>
+                                    <% length += 1 %> 
+                                    <tr>
+                                        <td class="text-center"><input type="checkbox" class="cb" value="<%= user.email %>"></td>
+                                        <td class="user-tr"><%= user.first_name + ' ' + user.last_name %></td>
+                                        <td class="user-tr"><%= user.email %></td>
+                                        <td class="user-tr"><%= user.user_type ? 'admin' : 'client' %></td>
+                                        <td class="text-center">
+                                            <img src="../assets/images/Delete-icon.png" onclick="deleteUser(this)" class="btn img-btn" alt="<%= user.email %>">
+                                        </td>
+                                    </tr>
+                                    <% } %>
+                                <% }); %>
+                                <% if (length === 0) { %>
+                                    <tr>
+                                        <td colspan="5" class="text-center user-tr">No registered users except the active account.</td>
+                                    </tr>
+                                <% } %> 
+
+                            </tbody>
+                        </table>
+                        <table class="history-table my-1">
+                            <thead>
+                                <tr>
+                                    <td class="user-tr p-1 bg-light">Total users: <strong><%= length %> </strong></td>
+                                </tr>
+                            </thead>
+                        </table>
+                    </fieldset>
+                </div>
+            </div>
+            <br>
+        </div>
+        <script src="/jquery-latest.js"></script>
+        <script src="/sweetalert.min.js" type="text/javascript"></script>
+        <script type="text/javascript">
+            function heading(url) {
+                window.location.href = url;
+            }
+            
+            var checkedCB = 0;
+            const userTable = document.getElementById('userTable');
+            const selectAll = document.getElementById('selectAll-cb');
+            const deleteBtn = document.getElementById('delete-btn');
+            const checkboxs = document.querySelectorAll('.cb');
+
+            selectAll.addEventListener('change', () => {
+                let checked = !selectAll.checked;
+                deleteBtn.disabled = checked;
+                checkedCB = !checked ? checkboxs.length : 0;
+                for (const cb of checkboxs) {
+                    cb.checked = !checked;
+                }
+                if (checkedCB <= 0) {
+                    deleteBtn.disabled = true;
+                    deleteBtn.classList.add('disabled');
+                    deleteBtn.classList.remove('btn-danger');
+                } else {
+                    deleteBtn.disabled = false;
+                    deleteBtn.classList.remove('disabled');
+                    deleteBtn.classList.add('btn-danger');
+                }
+
+            }, false);
+
+            for (const cb of checkboxs) {
+                let checked = cb.checked;
+                cb.addEventListener('change', () => {
+                    checkedCB = cb.checked ? checkedCB+1 : checkedCB-1;
+                    if (checkedCB <= 0) {
+                        deleteBtn.disabled = true;
+                        deleteBtn.classList.add('disabled');
+                        deleteBtn.classList.remove('btn-danger');
+                    } else {
+                        deleteBtn.disabled = false;
+                        deleteBtn.classList.remove('disabled');
+                        deleteBtn.classList.add('btn-danger');
+                    }
+                    selectAll.checked = false;
+                })
+            }
+
+            function deleteUser(row) {
+                swal({
+                    title: "Are you sure to delete " + row.alt + "?",
+                    text: "This action is irreversible.",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        row.parentElement.parentElement.remove();
+                        if (checkboxs.length === 0) selectAll.disabled = true;
+                        let array =[row.alt];
+                        sendRequest("/delUsers",array);
+                        showNotif(row.alt + " has been successfully removed.");
+                    }
+                });
+            }
+
+            function deleteAll(btn) {
+                if (btn.classList.contains('btn-danger')) {
+                    var array = [];
+                    for (const cb of document.querySelectorAll('.cb'))
+                        if (cb.checked) array.push(cb.value);
+                    swal({
+                        title: "Are you sure to delete " + array.length + " " + (array.length < 2 ? 'item?' : 'items?'),
+                        text: "This action is irreversible.",
+                        icon: "warning",
+                        buttons: true,
+                        dangerMode: true,
+                    })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            sendRequest("/delUsers", array);
+                            showNotif("The selected users have been successfully removed.");
+                            for (const cb of document.querySelectorAll('.cb')) 
+                                if (cb.checked) cb.parentElement.parentElement.remove();
+                        }
+                    });
+                }
+            }
+
+            //Send request
+            function sendRequest(url,file) {
+                var http = new XMLHttpRequest();
+                http.open("POST", url, true);
+                http.setRequestHeader(
+                  "Content-type",
+                  "application/x-www-form-urlencoded"
+                );
+                http.onreadystatechange = function () {
+                  if (this.readyState == 4 && this.status == 200) {
+                    window.location = "/";
+                  }
+                };
+                http.send("delete="+file);
+            }
+
+            // chercher sur un tableau
+            function filterTable(event) {
+                var filter = event.target.value.toUpperCase();
+                var rows = document.querySelector("#user-table tbody").rows;
+                
+                for (var i = 0; i < rows.length; i++) {
+                    var firstCol = rows[i].cells[1].textContent.toUpperCase();
+                    var secondCol = rows[i].cells[2].textContent.toUpperCase();
+                    var thirdCol = rows[i].cells[3].textContent.toUpperCase();
+                    if (firstCol.indexOf(filter) > -1 || secondCol.indexOf(filter) > -1 || thirdCol.indexOf(filter) > -1) {
+                        rows[i].style.display = "";
+                    } else {
+                        rows[i].style.display = "none";
+                    }      
+                }
+            }
+            document.querySelector('#search').addEventListener('keyup', filterTable, false);
+            document.querySelector('#search').addEventListener('search', filterTable, false);
+            function showNotif(text) {
+                const notif = document.querySelector('.notification');
+                notif.innerHTML = `<p class="text-white text-center badge bg-success">${text}</p>`;
+                notif.style.display = 'block';
+                setTimeout(() => {
+                    notif.style.display = 'none';
+                }, 5000);
+            }
+
+            function logout() {
+                swal({
+                title: "Are you sure to disconnect?",
+                text: "Your session will be closed",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+                })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        window.location.href = '/logout';
+                    }
+                });
+            } 
+            
+            document.forms[0].onsubmit = function (e) {
+                // inputs
+                for (const input of document.querySelectorAll('input')) {
+                    input.classList.remove('is-invalid');
+                    if (input.nextSibling) {
+                        input.nextSibling.remove();
+                    }
+                    if (input.type === 'text' && input.name !== 'lastname') {
+                        if (input.value.trim().length === 0) {
+                            addWarning(input, 'This field is required.');
+                        }
+                    } else if (input.type === 'password') {
+                        if (input.id === 'password' && input.value.length < 4)
+                            addWarning(input, 'The password must be at least 4 characters.');
+                        if (input.id === 'confirmation') {
+                            if (input.value.length === 0)
+                                addWarning(input, 'This field is required.');
+                            else if (input.value !== document.getElementById('password').value)
+                                addWarning(input, 'Your confirmation is invalid.');
+                        }
+                    } else if (input.type === 'email') {
+                        if (input.value.trim().length === 0)
+                            addWarning(input, 'This field is required.');
+                        else {
+                            if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(input.value)))
+                                addWarning(input, 'You have entered an invalid email address!');
+                        }
+                    }
+                }
+                // verifier les erreur
+                let validate = true;
+                for (const input of document.querySelectorAll('input')) {
+                    if (input.classList.contains('is-invalid')) {
+                        validate = false;
+                        break;
+                    }
+                }
+                if (!validate) e.preventDefault();
+            }
+
+            function addWarning(input, message) {
+                let small = document.createElement('small');
+                small.innerText = message;
+                small.className = 'text-danger';
+                input.after(small);
+                input.classList.add('is-invalid');
+            }
+            let msgfield = document.getElementById("msg");
+            if ("<%= msge %>" != "null") {
+                msgfield.setAttribute("style", "color:red;");
+                msgfield.innerHTML = "<%= msge %>";
+            }
+            else if ("<%= msgs %>" != "null") {
+                msgfield.setAttribute("style", "color:green;");
+                msgfield.innerHTML = "<%= msgs %>";
+            }
+            else {
+                msgfield.remove();
+            }
+
+            // afficher notif success
+            if ("<% notif %>" !== "") {
+                showNotif('<%= notif %>');
+            }
+        </script>
+    </body>
+</html>

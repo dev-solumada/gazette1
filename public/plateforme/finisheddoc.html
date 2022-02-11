@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="/style.css">
+		<link rel="stylesheet" href="/bstyle.css">
+        <title>XML - GAZETTE</title>
+    </head>
+    <body>
+	<div class="container-fluid">
+		<div class="row top-bar" id="navbar_top">
+			<div class="col-lg-6">
+				<span class="form-legend text-primary float-start">Formulaire Gazette</span>
+			</div>
+			<div class="col-lg-6">
+				<div class="row">
+					<div class="text">
+						<div class="row">
+							<div class="col-12">
+								<span class="profile border float-end my-0 ms-2">
+									<span>
+										<img src="/user.png" alt="userpic" srcset="" style="opacity: 0.6;width: 24px;">
+									</span>
+									<span class="mb-1">
+										<label><b class="text-dark"><%= email.substring(0, 100) %></b></label>
+									</span>
+								</span>
+								<% if (!type) { %> 
+									<select id="pdfdone" class="finisheddoc border py-2 float-end mx-2">
+										<option value="" class="text-primary">Finished documents (<%= dones.length %> )</option>
+										<% dones.forEach(function(done) { %>
+											<option value='<%= done.name %>'><%= done.name %> </option>
+										<% }); %>
+									</select>
+								<% } %> 
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-12 text-end">
+								<% if (type === true) { %>
+                                    <button type="button" class="btn btn-light" onclick="heading('/history/all')"><B class="text-dark ">Finished documents</B></button>
+								<button type="button" class="btn btn-light" onclick="heading('/list')"><B class="text-dark ">Go to users</B></button>
+								<button type="button" class="btn btn-light" onclick="heading('/home')"><B class="text-dark ">Go to home page</B></button>
+								<% } %>
+								<button type="button" class="btn btn-danger" onclick="logout()"><B class="text-white ">Logout</B></button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<!-- Main row -->
+        <div class="row">
+            <!-- INPUT FIELD // GAUCHE -->
+            <div class="col-md-4">
+                <!-- Identifier -->
+                <fieldset>
+                    <legend><label>List of users</label></legend>
+                    <table class="history-table" id="user-table">
+                        <thead>
+                            <tr class="bg-light">
+                                <th>
+                                    <input type="search" placeholder="SEARCH . . ." id="search">
+                                </th>
+                            </tr>
+                            <tr class="bg-light">
+                                <th class="user-tr text-start p-1">
+                                    User email
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% users.forEach(user => { %>
+                            <% active = (user.email == active_user) ? 'bg-info text-white' : '' %>
+                            <tr>
+                                <td class="p-1 user-tr <%= active %>">
+                                    <a href="/history/<%= user.email %>" class="email-link <%= active %>"><%= user.email %></a>
+                                    <button class="float-end btn btn-primary" onclick="check(this)"><B class="text-white">Detail</B></button>
+                                </td>
+                            </tr>
+                            <% }); %> 
+                        </tbody>
+                    </table>
+                    <table class="history-table my-1">
+                        <thead>
+                            <tr>
+                                <td class="user-tr p-1 bg-light">Total users: <strong><%= users.length %> </strong></td>
+                            </tr>
+                        </thead>
+                    </table>
+                </fieldset>
+            </div>
+            <!-- PDF FIELD // DROITE -->
+            <div class="col-md-8">
+                <fieldset>
+                    <legend><label>Finished documents</label></legend>
+                    <table class="history-table" id="doc-table">
+                        <thead>
+                            <tr class="bg-light">
+                                <th colspan="4">
+                                    <input type="search" placeholder="SEARCH . . ." id="searchdoc">
+                                </th>
+                            </tr>
+                            <tr class="bg-light">
+                                <th class="user-tr p-1">Name</th>
+                                <th class="user-tr p-1">User email</th>
+                                <th class="user-tr p-1">Version</th>
+                                <th class="user-tr p-1">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (dones.length == 0) { %>
+                                <tr>
+                                    <td colspan="4" class="user-tr p-1 text-center">No data to display.</td>
+                                </tr>
+                            <% } %>
+                            <% dones.forEach(pdf => { %>
+                            <tr class="">
+                                <td class="user-tr p-1">
+                                    <%= pdf.name %>
+                                </td>
+                                <td class="user-tr p-1">
+                                    <%= pdf.treated_by %>
+                                </td>
+                                <td class="user-tr p-1 text-center">
+                                    <%= pdf.version %>
+                                </td>
+                                <td class="user-tr p-1">
+                                    <%= new Date(pdf._date).toLocaleString() %>
+                                </td>
+                            </tr>
+                            <% }); %> 
+                        </tbody>
+                    </table>
+                    <table class="history-table my-1">
+                        <thead>
+                            <tr>
+                                <td class="user-tr p-1 bg-light">Total documents: <strong><%= dones.length %> </strong></td>
+                            </tr>
+                        </thead>
+                    </table>
+                </fieldset>
+            </div>
+        </div>
+	</div>
+    <br>
+		 
+	<script src="/jquery-latest.js"></script>
+	<script src="/sweetalert.min.js" type="text/javascript"></script>
+    <script>
+        function check(btn) {
+            btn.parentElement.firstElementChild.click()
+        }
+        // chercher sur un tableau
+        function filterTable(event) {
+            var filter = event.target.value.toUpperCase();
+            var rows = document.querySelector("#user-table tbody").rows;
+            
+            
+            for (var i = 0; i < rows.length; i++) {
+                var firstCol = rows[i].cells[0].textContent.toUpperCase();
+                if (firstCol.indexOf(filter) > -1) {
+                    rows[i].style.display = "";
+                } else {
+                    rows[i].style.display = "none";
+                }      
+            }
+        }
+        document.querySelector('#search').addEventListener('keyup', filterTable, false);
+        document.querySelector('#search').addEventListener('search', filterTable, false);
+        // chercher sur un tableau doc
+        function filterTableDoc(event) {
+            var filter = event.target.value.toUpperCase();
+            var rows = document.querySelector("#doc-table tbody").rows;
+            
+            
+            for (var i = 0; i < rows.length; i++) {
+                var firstCol = rows[i].cells[0].textContent.toUpperCase();
+                var secondCol = rows[i].cells[1].textContent.toUpperCase();
+                var thirdCol = rows[i].cells[2].textContent.toUpperCase();
+                var fourthCol = rows[i].cells[3].textContent.toUpperCase();
+                if (firstCol.indexOf(filter) > -1 || secondCol.indexOf(filter) > -1 || thirdCol.indexOf(filter) > -1 || fourthCol.indexOf(filter) > -1) {
+                    rows[i].style.display = "";
+                } else {
+                    rows[i].style.display = "none";
+                }      
+            }
+        }
+        document.querySelector('#searchdoc').addEventListener('keyup', filterTableDoc, false);
+        document.querySelector('#searchdoc').addEventListener('search', filterTableDoc, false);
+		function logout() {
+			swal({
+			title: "Are you sure to disconnect?",
+			text: "Your session will be closed",
+			icon: "warning",
+			buttons: true,
+			dangerMode: true,
+			})
+			.then((willDelete) => {
+				if (willDelete) {
+					window.location.href = '/logout';
+				}
+			});
+		} 
+		function heading(url) {
+			window.location.href = url;
+		}
+    </script>
+</html>

@@ -1,17 +1,4 @@
-<form action="" method="post" id="">
-	
-	<!-- Gazette infos -->
-	<div class="row">
-		<input class="select" type="hidden" name="400-country" id="GAZC">
-		<!-- Gazette Date (date)-->
-		<input class="select" type="hidden" name="400-date" id="GAZD">
-		<!-- Gazette Number (alphanum)-->
-		<input class="select" type="hidden" name="400-number" id="GAZN">
-		<!-- Date of publication -->
-		<input class="select" type="hidden" name="400-publication" id="GAZP">
-	</div>
 
-	<section class="p-0 showing-page">
 		<div class="row">
 			<div class="col-md-12 p-1">
 				<!-- Chapitre -->
@@ -32,53 +19,6 @@
 					<fieldset class="identifier-fieldset">
 						<legend><label for="">Identifier</label></legend>
 						<table class="table-identifier" border="1"  width="100%">
-							<!--  Serial number of the registration (alphanum) -->
-							<tr>
-								<td><label for="111"><strong>111</strong> Registration Nr. </label></td>
-								<td><input class="select" type="text" name="111" id="111"></td>
-							</tr>	
-							
-							<!--  Date of the termination of the registration of the mark *Date of the registration/renewal (date)-->
-							<tr>		
-								<td><label for="141"><strong>141</strong> CancellationDate </label></td>
-								<td><input class="select" type="date" name="141" id="141"></td>
-							</tr> 	
-							
-							<!--  Date of the registration (date) -->
-							<tr>
-								<td><label for="151"><strong>151</strong> Registration Date </label></td>
-								<td><input class="select" type="date" name="151" id="151"></td>
-							</tr>
-							<!-- Date of the renewal Related registration numbers (date) -->
-							<tr>
-								<td><label for="156"><strong>156</strong> Renewal Date </label></td>
-								<td><input class="select" type="date" name="156" id="156"></td>
-							</tr>
-							
-							<!-- Expected duration of the registration (number in years) -->
-							<tr>
-								<td><label for="171"><strong>171</strong> Registration Duration </label></td>
-								<td><input class="select" type="number" name="171" id="171"></td>
-							</tr>
-							
-							<!-- Expected duration of the renewal (number in years) -->
-							<tr>
-								<td><label for="176"><strong>176</strong> Renewal Duration </label></td>
-								<td><input class="select" type="number" name="176" id="176"></td>
-							</tr>
-							
-							<!-- Expected expiration date of the registration/renewal (date) -->
-							<tr>
-								<td><label for="180"><strong>180</strong> Expiration Date </label></td>
-								<td><input class="select" type="date" name="180" id="180"></td>
-							</tr>
-							
-							<!-- Expected expiration date of the renewal Authority registering the mark * (date) -->
-							<tr>
-								<td><label for="186"><strong>186</strong> Expiration Date </label></td>
-								<td><input class="select" type="date" name="186" id="186"></td>
-							</tr>
-							
 							<!--  Data concerning the application * (text) -->
 							<tr>
 								<td><label for="200"><strong>200</strong> Application info </label></td>
@@ -213,6 +153,7 @@
 				</div>
 			</div>
 			
+			
 			<div class="row">
 				<div class="col-md-12 p-1" id="agent-field">
 					<fieldset>
@@ -331,7 +272,7 @@
 					</fieldset>
 				</div>
 			</div>
-		
+
 			<div class="row">
 				<div class="col-md-12 p-1">
 					<fieldset>
@@ -341,7 +282,7 @@
 					</fieldset>
 				</div>
 			</div>
-			
+
 			<input type="hidden" id="end_mark">
 		</div>
 		
@@ -359,45 +300,6 @@
 				</div>
 			</div>
 		</div>
-	
+		
 		<input type="hidden" id="end_chap">
-	</section>
-
-	<div class="row my-0">
-		<div class="col-sm-12 text-center p-2" id="chapfinished">
-
-		</div>
-	</div>
-
-	<!-- Choisir chapitre suivant -->
-	<div class="row">
-		<div class="col-md-12 p-1">
-			<fieldset>
-				<legend><label for="">Choose next chapter</label></legend>
-				<div class="row">
-					<div class="col-sm-12">
-						<select class="bg-light" id="nextchap">
-							<option value=""></option>
-						</select>
-					</div>
-				</div>
-			</fieldset>
-		</div>
-	</div>
-
-	<!-- button -->
-	<div class="row p-1">
-		<div class="col-md-12 p-2 bg-light">
-			<div class="float-start">
-				<button type="button" class="btn btn-primary px-3 py-1" onclick="previousToPage2()"><B class="text-white">Previous</B></button>
-			</div>
-			<div class="float-end">
-				<button type="button" class="btn btn-success py-1 px-3 mx-2" onclick="downloadXML()" id="submitButton"><B class="text-white">Gazette finish</B></button>
-			</div>
-			<div class="float-end">
-				<button type="button" class="btn btn-danger py-1 px-3" onclick="cancel()" id="submitButton"><B class="text-white">Cancel</B></button>
-			</div>
-		</div>
-	</div>
-	<br>
-</form>
+	

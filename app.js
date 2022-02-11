@@ -6,6 +6,7 @@ const route = require("./public/route.js");
 const PORT = process.env.PORT || 8080;
 const methodOverride = require("method-override");
 const expsession = require('express-session');
+const flash = require('connect-flash');
 
 app.use(methodOverride("X-HTTP-Method"));
 app.use(methodOverride("X-HTTP-Method-Override"));
@@ -16,6 +17,9 @@ app.use(expsession({
   resave: true,
   saveUninitialized: true
 }));
+
+// flash data
+app.use(flash());
 
 // Fichier static a utiliser
 app.use(express.static("public"));
