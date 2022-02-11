@@ -1,8 +1,13 @@
 const express = require("express");
 const routeExp = express.Router();
 const mongoose = require("mongoose");
+const md5 = require('md5');
 const PdfDoneSchema = require("../models/PdfDone");
 const UserSchema = require("../models/User");
+const MONGOOSE_URL = "mongodb+srv://solumada:vbcFPNKhZk0vcpfI@cluster0.t0vx8.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+const MAIN_USER = "developpeur.solumada@gmail.com";
+const MAIN_PASS = "S0!um2d2";
+const PDF_LIMIT = 15;
 var session = null;
 let allpdf = "";
 let allusers = "";
@@ -15,8 +20,8 @@ var nodemailer = require("nodemailer");
 var transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "developpeur.solumada@gmail.com",
-    pass: "S0!um2d2",
+    user: MAIN_USER,
+    pass: MAIN_PASS,
   },
 });
 
@@ -26,19 +31,19 @@ routeExp.route("/").get(async function (req, res) {
   if (session.userid) {
     res.redirect("/home");
   } else {
-    //     mongoose
-    //     .connect("mongodb+srv://solumada:Password@cluster0.t0vx8.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", {
-    //       useUnifiedTopology: true,
-    //       UseNewUrlParser: true,
-    //     })
-    //     .then( async () => {
-    //         PdfDoneSchema.deleteMany({},()=>{
-    //   console.log("All pdf  is removed");
-    // })
-    // UserSchema.deleteMany({},()=>{
-    //   console.log("All user  is removed");
-    // })
-    //     })
+    mongoose
+    .connect(MONGOOSE_URL, {
+      useUnifiedTopology: true,
+      UseNewUrlParser: true,
+    })
+    .then( async () => {
+      // PdfDoneSchema.deleteMany({},()=>{
+      //   console.log("All pdf  is removed");
+      // })
+      // UserSchema.deleteMany({},()=>{
+      //   console.log("All user  is removed");
+      // })
+    })
     res.render("plateforme/login.html", { error: "", msgs: "null" });
   }
 });
@@ -58,38 +63,142 @@ routeExp.route("/home").get(function (req, res) {
   if (session.userid) {
     mongoose
       .connect(
-        "mongodb+srv://solumada:Password@cluster0.t0vx8.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+        MONGOOSE_URL,
         {
           useUnifiedTopology: true,
           UseNewUrlParser: true,
         }
       )
       .then(async () => {
-        allpdf = await PdfDoneSchema.find();
+        allpdf = await PdfDoneSchema.find({treated_by: session.userid})
+        .sort({_date: -1}).limit(PDF_LIMIT);
         Bdfiles = [];
         version = [];
         for (i = 0; i < allpdf.length; i++) {
           Bdfiles.push(allpdf[i].name);
           version.push(allpdf[i].version);
         }
-        fullname = await UserSchema.findOne({ email: session.userid });
+        user = await UserSchema.findOne({ email: session.userid });
         res.render("home.html", {
           dones: allpdf,
           bdfls: Bdfiles,
           version: version,
-          email: fullname.first_name + " " + fullname.last_name,
+          email: user.email,
+          type: user.user_type,
         });
       });
   } else {
-    res.render("plateforme/login.html", { error: "", msgs: "null" });
+    res.redirect("/login");
   }
 });
+
+// login 
+routeExp.route('/login').get(function(req, res) {
+  return res.render("plateforme/login.html", { error: "", msgs: "null" });
+})
+
+// history
+routeExp.route('/history/:userid').get(function(req, res) {
+  session = req.session;
+  if (session.userid) {
+    mongoose
+      .connect(
+        MONGOOSE_URL,
+        {
+          useUnifiedTopology: true,
+          UseNewUrlParser: true,
+        }
+      )
+      .then(async () => {
+        allpdf = await PdfDoneSchema.find((req.params.userid !== 'all') ? {treated_by: req.params.userid} : {}).sort({_date: -1});
+        users = await UserSchema.find();
+        Bdfiles = [];
+        version = [];
+        for (i = 0; i < allpdf.length; i++) {
+          Bdfiles.push(allpdf[i].name);
+          version.push(allpdf[i].version);
+        }
+        user = await UserSchema.findOne({ email: session.userid });
+        res.render("plateforme/finisheddoc.html", {
+          dones: allpdf,
+          bdfls: Bdfiles,
+          version: version,
+          email: user.email,
+          type: user.user_type,
+          users: users,
+          active_user: req.params.userid,
+        });
+      });
+  } else {
+    res.redirect('/login');
+  }
+})
+// list of users
+routeExp.route("/list").get(function (req, res) {
+  session = req.session;
+  if (session.userid) {
+    mongoose
+      .connect(
+        MONGOOSE_URL,
+        {
+          useUnifiedTopology: true,
+          UseNewUrlParser: true,
+        }
+      )
+      .then(async () => {
+        allpdf = await PdfDoneSchema.find({treated_by: session.userid}).sort({_date: -1});
+        users = await UserSchema.find();
+        done = await PdfDoneSchema.find();
+        Bdfiles = [];
+        version = [];
+        for (i = 0; i < allpdf.length; i++) {
+          Bdfiles.push(allpdf[i].name);
+          version.push(allpdf[i].version);
+        }
+        user = await UserSchema.findOne({ email: session.userid });
+        res.render("plateforme/list.html", {
+          dones: done,
+          users: users,
+          bdfls: Bdfiles,
+          version: version,
+          email: user.email,
+          type: user.user_type,
+          main_user: MAIN_USER,
+          msge: "null",
+          msgs: "null",
+          notif: req.flash('notif'),
+        });
+      });
+  } else {
+    res.redirect("/login");
+  }
+});
+
+
+//Delete user
+routeExp.route("/delUsers").post(function (req, res) {
+    mongoose
+    .connect(
+      MONGOOSE_URL,
+      {
+        useUnifiedTopology: true,
+        UseNewUrlParser: true,
+      }
+    )
+    .then(async () => {
+      var users = req.body.delete.split(",");
+      for (i=0;i<users.length;i++){
+          await UserSchema.deleteOne({email:users[i]});
+      }
+    })
+});
+
 //Login post
 routeExp.route("/login").post(function (req, res) {
   session = req.session;
   mongoose
     .connect(
-      "mongodb+srv://solumada:Password@cluster0.t0vx8.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+      MONGOOSE_URL,
       {
         useUnifiedTopology: true,
         UseNewUrlParser: true,
@@ -98,10 +207,8 @@ routeExp.route("/login").post(function (req, res) {
     .then(async () => {
       var login = await UserSchema.find({
         email: req.body.email,
-        password: req.body.password,
+        password: md5(req.body.password),
       });
-      console.log(login);
-      console.log(login.length);
       if (login.length != 0) {
         session.userid = req.body.email;
         res.redirect("/home");
@@ -113,17 +220,13 @@ routeExp.route("/login").post(function (req, res) {
       }
     });
 });
-//Get page create
-routeExp.route("/create").get(function (req, res) {
-  res.render("plateforme/create.html", { msge: "null", msgs: "null" });
-});
+
 //Get post create
 routeExp.route("/create").post(function (req, res) {
   session = req.session;
-  var random = randomCode();
   mongoose
     .connect(
-      "mongodb+srv://solumada:Password@cluster0.t0vx8.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+      MONGOOSE_URL,
       {
         useUnifiedTopology: true,
         UseNewUrlParser: true,
@@ -136,33 +239,37 @@ routeExp.route("/create").post(function (req, res) {
         Bdusers.push(allusers[i].email);
       }
       if (Bdusers.indexOf(req.body.email) === -1) {
-        session.code = random;
-        session.firstname = req.body.firstname;
-        session.lastname = req.body.lastname;
-        session.email = req.body.email;
-        session.password = req.body.password;
-        var mailOptions = {
-          from: "developpeur.solumada@gmail.com",
-          to: req.body.email,
-          subject: "Verification code XML Gazette",
-          html:
-            "<center><h1>YOUR XML GAZETTE CODE AUTHENTIFICATION</h1>" +
-            "<h3 style='width:250px;font-size:50px;padding:8px;background-color:#46449B; color:white'>" +
-            random +
-            "<h3></center>",
+        var new_user = {
+          first_name: req.body.firstname,
+          last_name: req.body.lastname,
+          email: req.body.email,
+          password: md5(req.body.password),
+          user_type: req.body.accounttype == 1 ? true : false,
         };
-        transporter.sendMail(mailOptions, function (error, info) {
-          if (error) {
-            console.log(error);
-          } else {
-            console.log("Email sent: " + info.response);
-            res.redirect("/activation");
-          }
-        });
+        await new UserSchema(new_user).save();
+        req.flash('notif', 'User has been successfully added.')
+        res.redirect("/list");
       } else {
-        res.render("plateforme/create.html", {
+        users = await UserSchema.find();
+        done = await PdfDoneSchema.find();
+        Bdfiles = [];
+        version = [];
+        for (i = 0; i < allpdf.length; i++) {
+          Bdfiles.push(allpdf[i].name);
+          version.push(allpdf[i].version);
+        }
+        user = await UserSchema.findOne({ email: session.userid });
+        res.render("plateforme/list.html", {
+          dones: done,
+          users: users,
+          bdfls: Bdfiles,
+          version: version,
+          email: user.email,
+          type: user.user_type,
+          main_user: MAIN_USER,
           msge: req.body.email + " is already exist",
           msgs: "null",
+          notif: null,
         });
       }
     });
@@ -176,7 +283,7 @@ routeExp.route("/authentification").post(function (req, res) {
     if (req.body.code == session.code) {
       mongoose
         .connect(
-          "mongodb+srv://solumada:Password@cluster0.t0vx8.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+          MONGOOSE_URL,
           {
             useUnifiedTopology: true,
             UseNewUrlParser: true,
@@ -216,7 +323,7 @@ routeExp.route("/forgot").post(function (req, res) {
   session = req.session;
   mongoose
     .connect(
-      "mongodb+srv://solumada:Password@cluster0.t0vx8.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+      MONGOOSE_URL,
       {
         useUnifiedTopology: true,
         UseNewUrlParser: true,
@@ -235,7 +342,7 @@ routeExp.route("/forgot").post(function (req, res) {
         session.emailconfirm = req.body.email;
         session.confirm = random;
         var mailOptions = {
-          from: "developpeur.solumada@gmail.com",
+          from: MAIN_USER,
           to: req.body.email,
           subject: "Verification code XML Gazette",
           html:
@@ -246,9 +353,7 @@ routeExp.route("/forgot").post(function (req, res) {
         };
         transporter.sendMail(mailOptions, function (error, info) {
           if (error) {
-            console.log(error);
           } else {
-            console.log("Email sent: " + info.response);
             res.redirect("/activation");
           }
         });
@@ -263,7 +368,7 @@ routeExp.route("/newpassword").get(function (req, res) {
 routeExp.route("/define").post(function (req, res) {
   mongoose
     .connect(
-      "mongodb+srv://solumada:Password@cluster0.t0vx8.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+      MONGOOSE_URL,
       {
         useUnifiedTopology: true,
         UseNewUrlParser: true,
@@ -272,7 +377,7 @@ routeExp.route("/define").post(function (req, res) {
     .then(async () => {
       await UserSchema.findOneAndUpdate(
         { email: session.emailconfirm },
-        { password: req.body.password }
+        { password: md5(req.body.password) }
       );
       res.render("plateforme/login.html", {
         msgs: session.emailconfirm + " is successfully updated",
@@ -293,7 +398,7 @@ routeExp.route("/logout").get(function (req, res) {
 routeExp.route("/download").post(function (req, res) {
   mongoose
     .connect(
-      "mongodb+srv://solumada:Password@cluster0.t0vx8.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+      MONGOOSE_URL,
       {
         useUnifiedTopology: true,
         UseNewUrlParser: true,
@@ -302,17 +407,11 @@ routeExp.route("/download").post(function (req, res) {
     .then(async () => {
       var pdfDone = {
         name: req.body.filename,
-        treated_by: fullname.last_name,
+        treated_by: session.userid,
         version: req.body.version,
+        _date: Date.now()
       };
-      if (Bdfiles.indexOf(req.body.filename) === -1) {
-        await new PdfDoneSchema(pdfDone).save();
-      } else {
-        await PdfDoneSchema.findOneAndUpdate(
-          { id: req.body.filename },
-          { version: req.body.version }
-        );
-      }
+      await new PdfDoneSchema(pdfDone).save();
       res.redirect("/");
     });
 });

@@ -9,69 +9,87 @@
         <title>XML - GAZETTE</title>
     </head>
     <body>
-        <div class="container-fluid">
-				<div class="row top-bar">
-					<div class="col-md-12">
-						<span class="form-legend text-primary float-start">Formulaire Gazette</span>
-						<div class="float-end left-nav">
-							<div>
-								<div>
+	<div class="container-fluid">
+		<div class="row top-bar" id="navbar_top">
+			<div class="col-lg-6">
+				<span class="form-legend text-primary float-start">Formulaire Gazette</span>
+			</div>
+			<div class="col-lg-6">
+				<div class="row">
+					<div class="text">
+						<div class="row">
+							<div class="col-12">
+								<span class="profile border float-end my-0 ms-2">
 									<span>
-										<label for="pdfdone"><strong class="text-primary">Finished documents:</strong></label>
+										<img src="/user.png" alt="userpic" srcset="" style="opacity: 0.6;width: 24px;">
 									</span>
-									<select id="pdfdone" class="border float-end">
-										<option value="" class="text-muted">Show here...</option>
+									<span class="mb-1">
+										<label><b class="text-dark"><%= email.substring(0, 100) %></b></label>
+									</span>
+								</span>
+								<% if (!type) { %> 
+									<% dones_array = []; %>
+									<% dones.forEach(function(done) { %>
+										<% if (dones_array.indexOf(done.name) < 0) { %>
+										<% dones_array.push(done.name) %>
+										<% } %>
+									<% }); %>
+									<select id="pdfdone" class="finisheddoc border py-2 float-end mx-2">
+										<option value="" class="text-primary">Finished documents (<%= dones_array.length %> )</option>
+										<% dones_array = []; %>
 										<% dones.forEach(function(done) { %>
-											<option value='<%= done.name %>'><%= done.name %> treated by <%= done.treated_by %> </option>
-										  <% }); %>
+											<% if (dones_array.indexOf(done.name) < 0) { %>
+											<% dones_array.push(done.name) %>
+											<option value='<%= done.name %>'><%= done.name %> </option>
+											<% } %>
+										<% }); %>
 									</select>
-								</div>
+								<% } %> 
 							</div>
-							<br>
-							<div>
-								<div class="profile">
-									<span><label><b><%= email %></b></label></span>
-									<button class="btn btn-danger float-end" onclick="logout()"><B class="text-white ">Logout</B></button>
-								</div>
+						</div>
+						<div class="row">
+							<div class="col-12 text-end">
+								<% if (type === true) { %>
+								<button type="button" class="btn btn-light" onclick="heading('/history/all')"><B class="text-dark ">Finished documents</B></button>
+								<button type="button" class="btn btn-light" onclick="heading('/list')"><B class="text-dark ">Go to users</B></button>
+								<% } %>
+								<button type="button" class="btn btn-danger" onclick="logout()"><B class="text-white ">Logout</B></button>
 							</div>
 						</div>
 					</div>
 				</div>
-
-				<div class="row">
-					<div class="col-12 px-1">
-						<fieldset style="border-color:rgb(185, 56, 56); " class="pb-0">
-							<legend><label class="text-danger">Warnings</label></legend>
-							<!-- Afficher les avertissements ici -->
-							<ul id="warnings-ul" class="row py-0">
-								<!-- list of warnings -->
-								
-							</ul>
-							<input type="hidden" id="already" value="">
-						</fieldset>
-					</div>
-				</div>
-				<!-- Main row -->
-				<div class="row">
-					<!-- INPUT FIELD // GAUCHE -->
-					<div class="col-xl-6" id="left-page">
-						<!-- Identifier -->
-					</div>
-					<!-- PDF FIELD // DROITE -->
-					<div class="col-xl-6">
-						<div class="form-group my-2">
-							<input type="file" accept="application/pdf" class="form-control" id="pdf" aria-describedby="helpId" placeholder="" onchange="uploadPDF()">
-							<!-- <button class="btn btn-dark float-start"><B class="text-white">Next document</B></button>
-							<button class="btn btn-danger float-end"><B class="text-white">Mark as done</B></button> -->
-						</div>
-						<object id="show" data="/pdf_paceholder.png" style="width:100% !important; height: 860px !important;zoom: 0% !important;" >
-							Your browser does not support PDFs
-						</object>
-					</div>
-				</div>
-			<!-- </fieldset> -->
+			</div>
 		</div>
-	<!-- </form> -->
+
+		<div class="row">
+			<div class="col-12 px-1">
+				<fieldset style="border-color:rgb(185, 56, 56); " class="pb-0">
+					<legend><label class="text-danger">Warnings</label></legend>
+					<!-- Afficher les avertissements ici -->
+					<ul id="warnings-ul" class="row py-0">
+						<!-- list of warnings -->
+					</ul>
+					<input type="hidden" id="already" value="">
+				</fieldset>
+			</div>
+		</div>
+		<!-- Main row -->
+		<div class="row content">
+			<!-- INPUT FIELD // GAUCHE -->
+			<div class="col-xl-6" id="left-page">
+				<!-- Identifier -->
+			</div>
+			<!-- PDF FIELD // DROITE -->
+			<div class="col-xl-6">
+				<div class="form-group my-2">
+					<input type="file" accept="application/pdf" class="form-control" id="pdf" aria-describedby="helpId" placeholder="" onchange="uploadPDF()">
+				</div>
+				<object id="show" data="/pdf_paceholder.png" style="width:100% !important;height: auto !important;zoom: 0% !important;" >
+					Your browser does not support PDFs
+				</object>
+			</div>
+		</div>
+	</div>
 		 
 	<script src="/jquery-latest.js"></script>
 	<script src="/table.js" type="text/javascript"></script>
@@ -79,49 +97,48 @@
 	<script src="/index.js" type="text/javascript"></script>
 	<script src="/jszip.min.js" type="text/javascript"></script>
 	<script src="/sweetalert.min.js" type="text/javascript"></script>
+	<script src="/nextchap.js" type="text/javascript"></script>
+	<script src="/nextpage.js" type="text/javascript"></script>
     <script>
         openFile('/page1.html');
 		callScripts();
 		// avertir l'utilisateur lors de l'actualisation de la page
-		// window.onbeforeunload = function(e) {
-		// 	return "Do you want to exit this page?";
-		// };
+		window.onbeforeunload = function(e) {
+			return "Do you want to exit this page?";
+		};
 		localStorage.clear();
 		var indice = 0;
 		var fileversion = "<%= version %>".split(",");
+
 		var filesDone = "<%= bdfls %>".split(",");
 		document.getElementById("pdf").addEventListener("change", () =>{
-			
 			var breaks = false;
-		filesDone.forEach(function (d){
-				
-			if(d == document.getElementById("pdf").files[0].name){
-				let warn = document.getElementById("warnings-ul");
-				warn.innerHTML ="";
-				let li = document.createElement("li");
-				li.setAttribute("style","font-weight:500;");
-				li.setAttribute("class","col-md-6 succes");
-				let info = "The pdf " + d +" has already been processed";
-				let text = document.createTextNode(info);
-				li.appendChild(text);
-				warn.appendChild(li);
-				document.getElementById("already").setAttribute("value",info);
-				breaks = true;
-				localStorage.setItem("version",parseInt(fileversion[indice]) + 1);
-				
-			}
-			else{
-				if (breaks == false){
-					indice++;
+			filesDone.forEach(function (d){
+				if(d == document.getElementById("pdf").files[0].name){
 					let warn = document.getElementById("warnings-ul");
 					warn.innerHTML ="";
-					document.getElementById("already").setAttribute("value","");
-					localStorage.setItem("version",1);
-				}	
-			}
-			
-		})
-		})
+					let li = document.createElement("li");
+					li.setAttribute("style","font-weight:500;");
+					li.setAttribute("class","col-md-6 succes");
+					let info = "The pdf " + d +" has already been processed";
+					let text = document.createTextNode(info);
+					li.appendChild(text);
+					warn.appendChild(li);
+					document.getElementById("already").setAttribute("value",info);
+					breaks = true;
+					localStorage.setItem("version",parseInt(fileversion[indice]) + 1);
+				}
+				else{
+					if (breaks == false){
+						indice++;
+						let warn = document.getElementById("warnings-ul");
+						warn.innerHTML ="";
+						document.getElementById("already").setAttribute("value","");
+						localStorage.setItem("version", 1);
+					}	
+				}
+			})
+		});
 		function logout() {
 			swal({
 			title: "Are you sure to disconnect?",
@@ -135,6 +152,9 @@
 					window.location.href = '/logout';
 				}
 			});
+		} 
+		function heading(url) {
+			window.location.href = url;
 		}
     </script>
     </body>

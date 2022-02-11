@@ -7,6 +7,7 @@ const tableScript = () => {
 
 let number_trapp=1;
 let number_trowner=1;
+let number_trpowner=1;
 let number_tragt=1;
 let number_trnice=1;
 function fieldempty(f1,f2,f3,app){
@@ -77,9 +78,7 @@ function addelementapp(e){
             else{
                 let elementtdname = document.createElement("td");
                 let elementimg = document.createElement("img");
-                elementimg.addEventListener("click", () => {
-                    elementimg.parentElement.parentElement.remove();
-                });
+                elementimg.setAttribute("onclick", 'deleteRow(this)');
                 elementimg.setAttribute("src",'assets/images/Delete-icon.png');
                 elementimg.setAttribute("class","btn");
                 elementimg.setAttribute("width",'24px');
@@ -143,9 +142,7 @@ function addelementowner(e){
             else{
                 let elementtdname = document.createElement("td");
                 let elementimg = document.createElement("img");
-                elementimg.addEventListener("click", () => {
-                    elementimg.parentElement.parentElement.remove();
-                });
+                elementimg.setAttribute("onclick", 'deleteRow(this)');
                 elementimg.setAttribute("src",'assets/images/Delete-icon.png');
                 elementimg.setAttribute("class","btn");
                 elementimg.setAttribute("width",'24px');
@@ -163,12 +160,76 @@ function addelementowner(e){
     callScripts(); // method from main.js
 }
 
+function addelementpowner(e){
+    const table = e.parentElement.parentElement.nextSibling.nextSibling;
+    let parentElement1 = document.getElementsByName('770-name')[0];
+    let parentElement2 = document.getElementsByName('770-address')[0];
+    let parentElement3 = document.getElementsByName('770-country')[0];
+    if (parentElement1.hasAttribute('disabled') && parentElement2.hasAttribute('disabled') && parentElement3.hasAttribute('disabled')) return;
+    if (table.childNodes[3].childElementCount < 5){
+        let step =0;
+        let apllicant = table.childNodes[3];
+        let elementtr = document.createElement("tr");
+        elementtr.setAttribute("id","trpowner"+number_trpowner);
+        while(step <= 3 ){
+            if (step<3){
+                let elementtdname = document.createElement("td");
+                let elementinput = document.createElement("input");
+                let firstInputId = ''; 
+                if (step === 0){
+                    elementinput.name = '770-name';
+                    firstInputId = 'name770-0';
+                    elementinput.id = 'name770-'+number_trpowner;
+                }
+                else if (step === 1){
+                    elementinput.name = '770-address';
+                    firstInputId = 'address770-0';
+                    elementinput.id = 'address770-'+number_trpowner;
+                }
+                else if(step === 2) {
+                    elementinput.name = '770-country';
+                    firstInputId = 'country770-0';
+                    elementinput.id = 'country770-'+number_trpowner;
+                }
+                // desactiver le champ si le premier element est désactivé
+                const firstInput = document.getElementById(firstInputId);
+                if (firstInput) {
+                    if (firstInput.disabled)
+                    elementinput.setAttribute("disabled",true);
+                }
+
+                elementinput.setAttribute("class", 'select');
+                elementtdname.appendChild(elementinput);
+                elementtr.appendChild(elementtdname);
+                apllicant.appendChild(elementtr);
+            }
+            else{
+                let elementtdname = document.createElement("td");
+                let elementimg = document.createElement("img");
+                elementimg.setAttribute("onclick", 'deleteRow(this)');
+                elementimg.setAttribute("src",'/Delete-icon.png');
+                elementimg.setAttribute("class","btn");
+                elementimg.setAttribute("width",'24px');
+                elementimg.setAttribute("height",'24px');
+                elementtdname.appendChild(elementimg);
+                elementtdname.setAttribute("align","center")
+                elementtr.appendChild(elementtdname);
+                apllicant.appendChild(elementtr);
+            }
+        
+        step++;
+    }
+    number_trpowner++;
+    }
+    callScripts(); // method from main.js
+}
+
 function addelementagt(e){
     const table = e.parentElement.parentElement.nextSibling.nextSibling;
-    let parent740 = document.getElementsByName('740')[0];
-    let parent750 = document.getElementsByName('750')[0];
-    let parent770 = document.getElementsByName('770')[0];
-    if (parent740.hasAttribute('disabled') && parent750.hasAttribute('disabled') && parent770.hasAttribute('disabled')) return;
+    let parent740name = document.getElementsByName('740-name')[0];
+    let parent740addres = document.getElementsByName('740-address')[0];
+    let parent740country = document.getElementsByName('740-country')[0];
+    if (parent740name.hasAttribute('disabled') && parent740addres.hasAttribute('disabled') && parent740country.hasAttribute('disabled') ) return;
     if (table.childNodes[3].childElementCount < 5){
         var apllicant = table.childNodes[3];
         function field(name){
@@ -190,20 +251,18 @@ function addelementagt(e){
         elementtr.setAttribute("id","tragt"+number_tragt);
         while(step <= 3 ){
                 if (step === 0){
-                    field("740");
+                    field("740-name");
                 }
                 else if (step === 1){
-                    field("750");
+                    field("740-address");
                 }
-                else if(step === 2) {
-                    field("770")
+                else if (step === 2){
+                    field("740-country");
                 }
             else{
                 let elementtdname = document.createElement("td");
                 let elementimg = document.createElement("img");
-                elementimg.addEventListener("click", () => {
-                    elementimg.parentElement.parentElement.remove();
-                });
+                elementimg.setAttribute("onclick", 'deleteRow(this)');
                 elementimg.setAttribute("src",'assets/images/Delete-icon.png')
                 elementimg.setAttribute("class","btn");
                 elementimg.setAttribute("width",'24px');
@@ -269,9 +328,7 @@ function addelementnice(e){
             else{
                 let elementtdname = document.createElement("td");
                 let elementimg = document.createElement("img");
-                elementimg.addEventListener("click", () => {
-                    elementimg.parentElement.parentElement.remove();
-                });
+                elementimg.setAttribute("onclick", 'deleteRow(this)');
                 elementimg.setAttribute("src",'assets/images/Delete-icon.png');
                 elementimg.setAttribute("class","btn");
                 elementimg.setAttribute("width",'24px');
@@ -288,4 +345,8 @@ function addelementnice(e){
     
     }
     callScripts(); // method from main.js
+}
+
+function deleteRow(btn) {
+    btn.parentElement.parentElement.remove();
 }
