@@ -327,7 +327,7 @@ function getAvailableChapter(country) {
       break;
     case 'MS': // for MS
     obj['Application'] = ['APP'];
-    obj['Changes/Corrrections/Concelations'] = ['RES'];
+    obj['Changes/Corrrections/Concelations'] = ['CAN', 'COR', 'RES'];
     obj['Registration'] = ['REG'];
     obj['Renewal'] = ['REN'];
       break;
